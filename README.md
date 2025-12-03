@@ -32,9 +32,15 @@ For example, to create 10 clones, run: `./DeployVM.ps1 -numClones 10`
 
 To deploy 5 clones, starting at 5 ending at 9, run: `./DeployVm.ps1 -numClones 5 -startAt 5`
 
+## ListVMClones.ps1
+
+This script lists all cloned VMs in the resource group, showing their public IP addresses and creation dates. The template VM is automatically excluded from the list.
+
+Run: `./ListVMClones.ps1` to view all VM clones.
+
 ## DeleteVMClones.ps1
 
-This script deletes cloned VMs. 
+This script deletes cloned VMs.
 
 It accepts the arguments:
 - numClones

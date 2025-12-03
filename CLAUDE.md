@@ -29,7 +29,7 @@ All scripts include pre-flight checks that will:
 
 ## Architecture
 
-The system consists of a shared configuration file and three main PowerShell scripts that interact with Azure resources:
+The system consists of a shared configuration file and four main PowerShell scripts that interact with Azure resources:
 
 ### config.ps1 (and config-example.ps1)
 Central configuration file containing all shared variables used across the scripts. All scripts source this file at startup using `. "$PSScriptRoot\config.ps1"`.
@@ -71,6 +71,19 @@ Creates multiple VM instances from a snapshot. Each VM gets its own complete set
 - Creates `summary.txt` with VM names and their public IP addresses
 
 All VM configuration (size, disk, network, credentials) is loaded from config.ps1.
+
+Includes pre-flight checks for config.ps1 existence and validation.
+
+### ListVMClones.ps1
+Lists all VM clones in the resource group with their details. Provides a quick overview of deployed training VMs.
+
+**Output displays:**
+- VM name
+- Public IP address
+- Power state (running/stopped)
+- Creation date and time
+
+The template VM (specified by `$sourceVmName`) is automatically excluded from the list.
 
 Includes pre-flight checks for config.ps1 existence and validation.
 
@@ -116,6 +129,11 @@ code config.ps1
 ### Deploy 10 VMs starting at index 5 (creates VMs 5-14):
 ```powershell
 ./CloneVMTemplate.ps1 -numClones 10 -startAt 5
+```
+
+### List all VM clones with IP addresses and creation dates:
+```powershell
+./ListVMClones.ps1
 ```
 
 ### Delete VMs 0-9:
