@@ -107,7 +107,7 @@ for ($i=$startAt; $i -lt $endVal; $i++)
 	createClonedVm -id $id
 }
 
-"Summary of VMs Created:" | Out-File -FilePath ".\summary.txt"
+"Summary of VMs Created:" | Out-File -FilePath "..\summary.txt"
 
 for ($i=$startAt; $i -lt $endVal; $i++)
 {
@@ -122,6 +122,6 @@ for ($i=$startAt; $i -lt $endVal; $i++)
     Write-Host "Public IP Address: $publicIpAddress"
 	$summary = "Created VM $virtualMachineName. IP Address$s $publicIpAddress"
 	Write-Host $summary
-	$summary | Out-File -FilePath ".\summary.txt" -Append
+	$summary | Out-File -FilePath "..\summary.txt" -Append
 
 }
