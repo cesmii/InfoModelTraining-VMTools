@@ -40,36 +40,18 @@ Run: `./ListVMClones.ps1` to view all VM clones.
 
 ## GenerateRDPFiles.ps1
 
-This script generates RDP connection files for all cloned VMs using the InfoModelTrainingVM.rdp template. Each RDP file is configured with the correct public IP address and optionally an encrypted password.
+This script generates RDP connection files for all cloned VMs using the InfoModelTrainingVM.rdp template. Each RDP file is configured with the correct public IP address for its corresponding VM.
 
 The script:
 - Creates RDP files for all VM clones
 - Replaces `<IPADDRESS>` in the template with actual public IPs
-- Includes encrypted password if `$encryptedPassword` is set in config.ps1
 - Names files with the VM's numerical suffix (e.g., InfoModelTrainingVM_0.rdp, InfoModelTrainingVM_1.rdp)
 - Compresses all files into a date-stamped zip archive (e.g., 25-12-03_RDP.zip)
 - Automatically deletes the temporary folder after zipping
 
-**Optional - Adding Encrypted Password:**
-To include password in RDP files:
-1. Run `EncryptPassword.ps1` on a Windows machine
-2. Copy the generated `$encryptedPassword = "..."` line to your config.ps1
-3. Upload updated config.ps1 to Azure Cloud Shell
-
-If no encrypted password is provided, users will need to enter the password manually when connecting.
+Users will need to enter the password when connecting to VMs.
 
 Run: `./GenerateRDPFiles.ps1` to generate and zip RDP files for all VM clones.
-
-## EncryptPassword.ps1
-
-Helper script to encrypt passwords for RDP files. **Run this on a Windows machine** (not in Azure Cloud Shell).
-
-This script:
-- Prompts for password securely
-- Encrypts using Windows DPAPI
-- Outputs the encrypted hex string to add to config.ps1
-
-Run on Windows: `./EncryptPassword.ps1`
 
 ## DeleteVMClones.ps1
 

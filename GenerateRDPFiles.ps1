@@ -41,18 +41,6 @@ if (-not (Test-Path $rdpTemplatePath)) {
 # Select the subscription
 Select-AzSubscription -SubscriptionId $subscriptionId | Out-Null
 
-# Check for encrypted password in config.ps1
-# User should encrypt password externally and set $encryptedPassword variable
-if (-not [string]::IsNullOrWhiteSpace($encryptedPassword)) {
-    $passwordLine = "password 51:b:$encryptedPassword"
-    Write-Host "✓ Encrypted password found in config.ps1 and will be included in RDP files" -ForegroundColor Green
-}
-else {
-    Write-Host "Note: No encrypted password found in config.ps1 (set `$encryptedPassword variable)" -ForegroundColor Yellow
-    Write-Host "      Users will need to enter password manually when connecting" -ForegroundColor Yellow
-    $passwordLine = $null
-}
-
 # Create output folder with date format YY-MM-DD_RDP
 $dateString = Get-Date -Format "yy-MM-dd"
 $outputFolder = "$PSScriptRoot\${dateString}_RDP"
@@ -68,11 +56,6 @@ Write-Host ""
 Write-Host "==================================================================="
 Write-Host "Generating RDP files for VM clones"
 Write-Host "==================================================================="
-if ($passwordLine) {
-    Write-Host "✓ Password encrypted and will be included in RDP files"
-} else {
-    Write-Host "⚠ Password encryption failed - users will need to enter password manually"
-}
 Write-Host ""
 
 # Get all VMs in the resource group, excluding the source template VM and InfoModelTools
@@ -129,11 +112,6 @@ foreach ($vm in $vms) {
 
         # Replace the placeholder with actual IP address
         $rdpContent = $rdpTemplate -replace "<IPADDRESS>", $publicIpAddress
-
-        # Add encrypted password if available
-        if ($passwordLine) {
-            $rdpContent = $rdpContent + "`r`n$passwordLine`r`n"
-        }
 
         # Create output file name
         $outputFileName = "InfoModelTrainingVM_$vmSuffix.rdp"
