@@ -13,6 +13,7 @@ if (-not (Test-Path $configPath)) {
 
 # Load configuration
 . $configPath
+Write-Host "Password: $($password)"
 
 # Validate no placeholder values remain
 $configContent = Get-Content $configPath -Raw
@@ -41,21 +42,30 @@ if (-not (Test-Path $rdpTemplatePath)) {
 # Select the subscription
 Select-AzSubscription -SubscriptionId $subscriptionId | Out-Null
 
-# Encrypt password for RDP file using Windows DPAPI
-# Note: DPAPI encryption is user-specific. If users need to re-enter password on first use, this is normal.
-try {
-    $passwordBytes = [System.Text.Encoding]::Unicode.GetBytes($password)
-    $encryptedBytes = [System.Security.Cryptography.ProtectedData]::Protect(
-        $passwordBytes,
-        $null,
-        [System.Security.Cryptography.DataProtectionScope]::CurrentUser
-    )
-    $hexPassword = [System.BitConverter]::ToString($encryptedBytes) -replace '-', ''
-    $passwordLine = "password 51:b:$hexPassword"
-}
-catch {
-    Write-Warning "Could not encrypt password using DPAPI. RDP files will not include password."
+# Verify password variable is loaded
+if ([string]::IsNullOrWhiteSpace($password)) {
+    Write-Warning "Password variable is not set in config.ps1. RDP files will not include password."
     $passwordLine = $null
+}
+else {
+    # Encrypt password for RDP file using Windows DPAPI
+    # Note: DPAPI encryption is user-specific. If users need to re-enter password on first use, this is normal.
+    try {
+        $passwordBytes = [System.Text.Encoding]::Unicode.GetBytes($password)
+        $encryptedBytes = [System.Security.Cryptography.ProtectedData]::Protect(
+            $passwordBytes,
+            $null,
+            [System.Security.Cryptography.DataProtectionScope]::CurrentUser
+        )
+        $hexPassword = [System.BitConverter]::ToString($encryptedBytes) -replace '-', ''
+        $passwordLine = "password 51:b:$hexPassword"
+        Write-Host "Password loaded from config.ps1 and encrypted successfully" -ForegroundColor Green
+    }
+    catch {
+        Write-Warning "Could not encrypt password using DPAPI: $_"
+        Write-Warning "RDP files will not include password."
+        $passwordLine = $null
+    }
 }
 
 # Create output folder with date format YY-MM-DD_RDP
