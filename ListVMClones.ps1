@@ -5,7 +5,7 @@ if (-not (Test-Path $configPath)) {
     Write-Host ""
     Write-Host "Please follow these steps:"
     Write-Host "1. Copy config-example.ps1 to config.ps1"
-    Write-Host "2. Edit config.ps1 and set the username and password"
+    Write-Host "2. Edit config.ps1 and set the subscriptionid, username and password"
     Write-Host "3. Review other configuration values"
     Write-Host ""
     exit 1
@@ -36,8 +36,8 @@ Write-Host "VM Clones in Resource Group: $resourceGroupName"
 Write-Host "==================================================================="
 Write-Host ""
 
-# Get all VMs in the resource group, excluding the source template VM
-$vms = Get-AzVM -ResourceGroupName $resourceGroupName | Where-Object { $_.Name -ne $sourceVmName } | Sort-Object -Property Name
+# Get all VMs in the resource group, excluding the source template VM and InfoModelTools
+$vms = Get-AzVM -ResourceGroupName $resourceGroupName | Where-Object { $_.Name -ne $sourceVmName -and $_.Name -ne "InfoModelTools" } | Sort-Object -Property Name
 
 if ($vms.Count -eq 0) {
     Write-Host "No VM clones found in resource group '$resourceGroupName'"
@@ -94,5 +94,5 @@ $vmList | Format-Table -Property Name, PublicIP, Status, Created -AutoSize
 Write-Host ""
 Write-Host "Total VM clones found: $($vmList.Count)"
 Write-Host ""
-Write-Host "Note: Template VM '$sourceVmName' is excluded from this list"
+Write-Host "Note: Template VM '$sourceVmName' and 'InfoModelTools' are excluded from this list"
 Write-Host ""

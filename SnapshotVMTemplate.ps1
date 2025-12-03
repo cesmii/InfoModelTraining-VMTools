@@ -5,7 +5,7 @@ if (-not (Test-Path $configPath)) {
     Write-Host ""
     Write-Host "Please follow these steps:"
     Write-Host "1. Copy config-example.ps1 to config.ps1"
-    Write-Host "2. Edit config.ps1 and set the username and password"
+    Write-Host "2. Edit config.ps1 and set the subscriptionid, username and password"
     Write-Host "3. Review other configuration values"
     Write-Host ""
     exit 1
