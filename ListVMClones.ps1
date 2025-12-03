@@ -93,6 +93,6 @@ $vmList | Format-Table -Property Name, PublicIP, Status, Created -AutoSize
 
 Write-Host ""
 Write-Host "Total VM clones found: $($vmList.Count)"
-Write-Host ""
-Write-Host "Note: Template VM '$sourceVmName' and 'InfoModelTools' are excluded from this list"
+#Write-Host ""
+#Write-Host "Note: Template VM '$sourceVmName' and 'InfoModelTools' are excluded from this list"
 Write-Host ""
