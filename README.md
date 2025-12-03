@@ -2,13 +2,15 @@
 
 Upload these scripts to your Azure Cloud Shell. Ensure you are in PowerShell (not Bash) mode.
 
-Copy `config-example.ps1` to `config.ps1`
+Copy `config-example.ps1` to `config.ps1`.
 
 ## config.ps1
 
 Check and update config.ps1 for variables that apply to all scripts.
 
-Set the username and password in the VM Credentials section
+Set the subscription id in the Azure Subscription section (find this in the header of almost any resource in the Azure portal).
+
+Set the username and password in the VM Credentials section (see Sharepoint).
 
 ## SnapshotVMTemplate.ps1
 
