@@ -102,11 +102,28 @@ Generates Remote Desktop Protocol (RDP) connection files for all VM clones using
 
 **Output:** Creates a date-stamped zip file (e.g., `25-12-03_RDP.zip` for December 3, 2025) in the parent directory containing all RDP files. Download this single file from Azure Cloud Shell instead of multiple individual files.
 
-**Password encryption:** Uses Windows DPAPI to encrypt passwords. This is user-specific encryption - users may be prompted to enter the password on first connection, after which Windows will remember it. This is normal behavior for DPAPI-encrypted credentials.
+**Password encryption (optional):** If `$encryptedPassword` is set in config.ps1, the script includes it in the RDP files. Use the EncryptPassword.ps1 helper script on a Windows machine to generate the encrypted password string. If not provided, users will need to enter the password manually on first connection.
+
+**Why external encryption?** Azure Cloud Shell is Linux-based and doesn't support Windows DPAPI encryption. The EncryptPassword.ps1 script must be run on a Windows machine to generate the encrypted password, which is then added to config.ps1.
 
 The template VM (`$sourceVmName`) and `InfoModelTools` are automatically excluded.
 
 Includes pre-flight checks for config.ps1 existence, validation, and RDP template file existence.
+
+### EncryptPassword.ps1
+Helper utility to generate encrypted password strings for RDP files. **This script must be run on a Windows machine**, not in Azure Cloud Shell.
+
+**Purpose:** Azure Cloud Shell is Linux-based and cannot use Windows DPAPI encryption. This script allows you to encrypt the password on a Windows machine and then add the encrypted string to config.ps1.
+
+**How it works:**
+1. Prompts for password (input is masked)
+2. Encrypts using Windows DPAPI
+3. Converts to hexadecimal string
+4. Outputs the `$encryptedPassword = "..."` line to copy into config.ps1
+
+**Usage:** Run on any Windows machine with PowerShell. The encrypted password can then be added to config.ps1 and uploaded to Azure Cloud Shell.
+
+**Note:** DPAPI encryption is user-specific. The encrypted password will work best if the person encrypting it is the same person who will use the RDP files. For training scenarios, users may still need to enter the password on first connection.
 
 ### DeleteVMClones.ps1
 Removes VM clones and all associated resources to clean up the environment. Uses configuration from config.ps1 to identify resource names.

@@ -20,6 +20,11 @@ $storageType = "Standard_LRS"
 $userName = "<SET_THIS_VALUE>"
 $password = "<SET_THIS_VALUE>"
 
+# Encrypted password for RDP files (optional)
+# Generate this on a Windows machine using the EncryptPassword.ps1 helper script
+# If not set, users will need to enter password manually when connecting to VMs
+$encryptedPassword = ""
+
 # VM Naming Pattern (used in all scripts)
 # VMs will be named: InfoModelTraining_<id>
 $vmNamePrefix = "InfoModelTraining"
