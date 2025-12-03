@@ -92,13 +92,17 @@ Generates Remote Desktop Protocol (RDP) connection files for all VM clones using
 
 **How it works:**
 1. Reads the InfoModelTrainingVM.rdp template file
-2. Queries all VM clones and their public IP addresses
-3. Replaces `<IPADDRESS>` placeholder with actual VM IPs
-4. Creates individual RDP files named with the VM's numerical suffix (e.g., InfoModelTrainingVM_0.rdp)
-5. Compresses all RDP files into a single zip archive
-6. Deletes the temporary folder, leaving only the zip file
+2. Encrypts the password from config.ps1 using Windows DPAPI (Data Protection API)
+3. Queries all VM clones and their public IP addresses
+4. Replaces `<IPADDRESS>` placeholder with actual VM IPs
+5. Embeds encrypted password in RDP file
+6. Creates individual RDP files named with the VM's numerical suffix (e.g., InfoModelTrainingVM_0.rdp)
+7. Compresses all RDP files into a single zip archive
+8. Deletes the temporary folder, leaving only the zip file
 
-**Output:** Creates a date-stamped zip file (e.g., `25-12-03_RDP.zip` for December 3, 2025) containing all RDP files. Download this single file from Azure Cloud Shell instead of multiple individual files.
+**Output:** Creates a date-stamped zip file (e.g., `25-12-03_RDP.zip` for December 3, 2025) in the parent directory containing all RDP files. Download this single file from Azure Cloud Shell instead of multiple individual files.
+
+**Password encryption:** Uses Windows DPAPI to encrypt passwords. This is user-specific encryption - users may be prompted to enter the password on first connection, after which Windows will remember it. This is normal behavior for DPAPI-encrypted credentials.
 
 The template VM (`$sourceVmName`) and `InfoModelTools` are automatically excluded.
 

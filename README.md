@@ -40,14 +40,17 @@ Run: `./ListVMClones.ps1` to view all VM clones.
 
 ## GenerateRDPFiles.ps1
 
-This script generates RDP connection files for all cloned VMs using the InfoModelTrainingVM.rdp template. Each RDP file is configured with the correct public IP address for its corresponding VM.
+This script generates RDP connection files for all cloned VMs using the InfoModelTrainingVM.rdp template. Each RDP file is configured with the correct public IP address and encrypted password for its corresponding VM.
 
 The script:
 - Creates RDP files for all VM clones
 - Replaces `<IPADDRESS>` in the template with actual public IPs
+- Encrypts and embeds the password from config.ps1 using Windows DPAPI
 - Names files with the VM's numerical suffix (e.g., InfoModelTrainingVM_0.rdp, InfoModelTrainingVM_1.rdp)
 - Compresses all files into a date-stamped zip archive (e.g., 25-12-03_RDP.zip)
 - Automatically deletes the temporary folder after zipping
+
+**Note:** Password encryption is user-specific. Users may need to enter the password on first connection, after which Windows will remember it.
 
 Run: `./GenerateRDPFiles.ps1` to generate and zip RDP files for all VM clones.
 

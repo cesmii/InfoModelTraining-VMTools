@@ -41,6 +41,23 @@ if (-not (Test-Path $rdpTemplatePath)) {
 # Select the subscription
 Select-AzSubscription -SubscriptionId $subscriptionId | Out-Null
 
+# Encrypt password for RDP file using Windows DPAPI
+# Note: DPAPI encryption is user-specific. If users need to re-enter password on first use, this is normal.
+try {
+    $passwordBytes = [System.Text.Encoding]::Unicode.GetBytes($password)
+    $encryptedBytes = [System.Security.Cryptography.ProtectedData]::Protect(
+        $passwordBytes,
+        $null,
+        [System.Security.Cryptography.DataProtectionScope]::CurrentUser
+    )
+    $hexPassword = [System.BitConverter]::ToString($encryptedBytes) -replace '-', ''
+    $passwordLine = "password 51:b:$hexPassword"
+}
+catch {
+    Write-Warning "Could not encrypt password using DPAPI. RDP files will not include password."
+    $passwordLine = $null
+}
+
 # Create output folder with date format YY-MM-DD_RDP
 $dateString = Get-Date -Format "yy-MM-dd"
 $outputFolder = "$PSScriptRoot\${dateString}_RDP"
@@ -56,6 +73,11 @@ Write-Host ""
 Write-Host "==================================================================="
 Write-Host "Generating RDP files for VM clones"
 Write-Host "==================================================================="
+if ($passwordLine) {
+    Write-Host "✓ Password encrypted and will be included in RDP files"
+} else {
+    Write-Host "⚠ Password encryption failed - users will need to enter password manually"
+}
 Write-Host ""
 
 # Get all VMs in the resource group, excluding the source template VM and InfoModelTools
@@ -112,6 +134,11 @@ foreach ($vm in $vms) {
 
         # Replace the placeholder with actual IP address
         $rdpContent = $rdpTemplate -replace "<IPADDRESS>", $publicIpAddress
+
+        # Add encrypted password if available
+        if ($passwordLine) {
+            $rdpContent = $rdpContent + "`r`n$passwordLine`r`n"
+        }
 
         # Create output file name
         $outputFileName = "InfoModelTrainingVM_$vmSuffix.rdp"
