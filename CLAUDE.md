@@ -29,7 +29,7 @@ All scripts include pre-flight checks that will:
 
 ## Architecture
 
-The system consists of a shared configuration file and four main PowerShell scripts that interact with Azure resources:
+The system consists of a shared configuration file and five main PowerShell scripts that interact with Azure resources:
 
 ### config.ps1 (and config-example.ps1)
 Central configuration file containing all shared variables used across the scripts. All scripts source this file at startup using `. "$PSScriptRoot\config.ps1"`.
@@ -83,9 +83,25 @@ Lists all VM clones in the resource group with their details. Provides a quick o
 - Power state (running/stopped)
 - Creation date and time
 
-The template VM (specified by `$sourceVmName`) is automatically excluded from the list.
+The template VM (specified by `$sourceVmName`) and `InfoModelTools` are automatically excluded from the list.
 
 Includes pre-flight checks for config.ps1 existence and validation.
+
+### GenerateRDPFiles.ps1
+Generates Remote Desktop Protocol (RDP) connection files for all VM clones using the InfoModelTrainingVM.rdp template file. This script automates the creation of pre-configured RDP files for easy distribution to training participants.
+
+**How it works:**
+1. Reads the InfoModelTrainingVM.rdp template file
+2. Queries all VM clones and their public IP addresses
+3. Replaces `<IPADDRESS>` placeholder with actual VM IPs
+4. Creates individual RDP files named with the VM's numerical suffix (e.g., InfoModelTrainingVM_0.rdp)
+5. Outputs all files to a date-stamped folder (format: YY-MM-DD_RDP)
+
+**Output folder:** Creates a subfolder named with current date (e.g., `25-12-03_RDP` for December 3, 2025)
+
+The template VM (`$sourceVmName`) and `InfoModelTools` are automatically excluded.
+
+Includes pre-flight checks for config.ps1 existence, validation, and RDP template file existence.
 
 ### DeleteVMClones.ps1
 Removes VM clones and all associated resources to clean up the environment. Uses configuration from config.ps1 to identify resource names.
@@ -134,6 +150,11 @@ code config.ps1
 ### List all VM clones with IP addresses and creation dates:
 ```powershell
 ./ListVMClones.ps1
+```
+
+### Generate RDP files for all VM clones:
+```powershell
+./GenerateRDPFiles.ps1
 ```
 
 ### Delete VMs 0-9:

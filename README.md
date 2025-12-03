@@ -38,6 +38,18 @@ This script lists all cloned VMs in the resource group, showing their public IP 
 
 Run: `./ListVMClones.ps1` to view all VM clones.
 
+## GenerateRDPFiles.ps1
+
+This script generates RDP connection files for all cloned VMs using the InfoModelTrainingVM.rdp template. Each RDP file is configured with the correct public IP address for its corresponding VM.
+
+The script:
+- Creates RDP files for all VM clones
+- Replaces `<IPADDRESS>` in the template with actual public IPs
+- Names files with the VM's numerical suffix (e.g., InfoModelTrainingVM_0.rdp, InfoModelTrainingVM_1.rdp)
+- Outputs files to a date-stamped folder (e.g., 25-12-03_RDP)
+
+Run: `./GenerateRDPFiles.ps1` to generate RDP files for all VM clones.
+
 ## DeleteVMClones.ps1
 
 This script deletes cloned VMs.
