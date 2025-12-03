@@ -95,9 +95,10 @@ Generates Remote Desktop Protocol (RDP) connection files for all VM clones using
 2. Queries all VM clones and their public IP addresses
 3. Replaces `<IPADDRESS>` placeholder with actual VM IPs
 4. Creates individual RDP files named with the VM's numerical suffix (e.g., InfoModelTrainingVM_0.rdp)
-5. Outputs all files to a date-stamped folder (format: YY-MM-DD_RDP)
+5. Compresses all RDP files into a single zip archive
+6. Deletes the temporary folder, leaving only the zip file
 
-**Output folder:** Creates a subfolder named with current date (e.g., `25-12-03_RDP` for December 3, 2025)
+**Output:** Creates a date-stamped zip file (e.g., `25-12-03_RDP.zip` for December 3, 2025) containing all RDP files. Download this single file from Azure Cloud Shell instead of multiple individual files.
 
 The template VM (`$sourceVmName`) and `InfoModelTools` are automatically excluded.
 

@@ -46,9 +46,10 @@ The script:
 - Creates RDP files for all VM clones
 - Replaces `<IPADDRESS>` in the template with actual public IPs
 - Names files with the VM's numerical suffix (e.g., InfoModelTrainingVM_0.rdp, InfoModelTrainingVM_1.rdp)
-- Outputs files to a date-stamped folder (e.g., 25-12-03_RDP)
+- Compresses all files into a date-stamped zip archive (e.g., 25-12-03_RDP.zip)
+- Automatically deletes the temporary folder after zipping
 
-Run: `./GenerateRDPFiles.ps1` to generate RDP files for all VM clones.
+Run: `./GenerateRDPFiles.ps1` to generate and zip RDP files for all VM clones.
 
 ## DeleteVMClones.ps1
 

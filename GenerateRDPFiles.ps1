@@ -137,7 +137,42 @@ Write-Host "RDP files created: $successCount"
 if ($failCount -gt 0) {
     Write-Host "Failed: $failCount" -ForegroundColor Yellow
 }
-Write-Host "Output folder: $outputFolder"
 Write-Host ""
-Write-Host "You can now download the folder and use the RDP files to connect to the VMs."
-Write-Host ""
+
+# Zip the folder if any files were created
+if ($successCount -gt 0) {
+    Write-Host "Compressing RDP files into zip archive..."
+
+    $zipFileName = "${dateString}_RDP.zip"
+    # Place zip file in parent directory for easier access
+    $parentDir = Split-Path $PSScriptRoot -Parent
+    $zipFilePath = Join-Path $parentDir $zipFileName
+
+    # Remove existing zip file if it exists
+    if (Test-Path $zipFilePath) {
+        Remove-Item $zipFilePath -Force
+    }
+
+    try {
+        # Create zip archive
+        Compress-Archive -Path "$outputFolder\*" -DestinationPath $zipFilePath -CompressionLevel Optimal
+
+        # Delete the folder after successful zipping
+        Remove-Item $outputFolder -Recurse -Force
+
+        Write-Host "✓ Created zip file in parent directory: $zipFileName"
+        Write-Host ""
+        Write-Host "Download the zip file from Azure Cloud Shell:"
+        Write-Host "  1. Go to Manage files -> Download"
+        Write-Host "  2. Enter: $zipFileName"
+        Write-Host ""
+    }
+    catch {
+        Write-Warning "Failed to create zip file: $_"
+        Write-Host "RDP files are still available in folder: $outputFolder"
+        Write-Host ""
+    }
+} else {
+    Write-Host "No RDP files were created."
+    Write-Host ""
+}
